@@ -37,6 +37,12 @@ package management (`Directory.Packages.props`).
   command name so multiple apps coexist in one startup file.
 - `CompletionCommand` / `RootCommandExtensions.AddCompletions` — the drop-in surface; hosts with
   their own presentation layer can call the installer directly instead.
+- `CompletionAutoInstall` — startup auto-install: silent for completion-directory installs, `[y/N]`
+  prompt for startup-file edits, at most once per shell (`AutoInstallLedger` markers in the XDG
+  state home remember installs and declines). Skips CI, non-interactive streams, `[suggest:…]`
+  callbacks, and explicit `completion` invocations; the public `Run` never throws.
+  `AutoInstallConsole` is the terminal seam, `Shell.DetectCurrent` picks the shell (PowerShell
+  session signal wins over the login shell).
 
 ## Tests
 

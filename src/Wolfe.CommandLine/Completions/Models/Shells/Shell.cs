@@ -50,6 +50,29 @@ internal abstract class Shell
         ?? throw new ArgumentOutOfRangeException(nameof(name), name, "Unknown shell.");
 
     /// <summary>
+    /// The shell the user is running in, or null when it cannot be told or is unsupported.
+    /// </summary>
+    /// <remarks>
+    /// PowerShell is detected from the session (the login shell still names the Unix default there);
+    /// otherwise the login shell's basename decides.
+    /// </remarks>
+    public static Shell? DetectCurrent(CompletionEnvironment environment)
+    {
+        if (environment.IsWindows || environment.RunningInPowerShell)
+        {
+            return Pwsh;
+        }
+
+        if (environment.LoginShell is not { Length: > 0 } login)
+        {
+            return null;
+        }
+
+        var name = Path.GetFileName(login);
+        return All.FirstOrDefault(shell => shell.Name == name);
+    }
+
+    /// <summary>
     /// The completion script for <paramref name="command"/>: registers a completer that, on tab, calls
     /// <c>command [suggest:&lt;cursor&gt;] "&lt;line&gt;"</c> (System.CommandLine's suggest directive) and feeds
     /// the candidates back to the shell. Suitable for sourcing into a live shell or from a startup file.
