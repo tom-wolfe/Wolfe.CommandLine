@@ -16,13 +16,13 @@ public sealed class CompletionAutoInstallTests : IDisposable
         bool bashCompletion = false,
         bool powerShell = false,
         bool continuousIntegration = false) => new()
-    {
-        Home = _root,
-        BashCompletionInstalled = () => bashCompletion,
-        LoginShell = loginShell,
-        RunningInPowerShell = powerShell,
-        IsContinuousIntegration = continuousIntegration,
-    };
+        {
+            Home = _root,
+            BashCompletionInstalled = () => bashCompletion,
+            LoginShell = loginShell,
+            RunningInPowerShell = powerShell,
+            IsContinuousIntegration = continuousIntegration,
+        };
 
     private AutoInstallConsole ConsoleWith(bool interactive = true, bool accept = false) => new()
     {
