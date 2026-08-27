@@ -1,0 +1,6 @@
+{
+  "workflow": "dotnet-package",
+  "build": {
+    "project": "src/Wolfe.CommandLine/Wolfe.CommandLine.csproj"
+  }
+}
