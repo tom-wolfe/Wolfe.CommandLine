@@ -1,3 +1,5 @@
+[![Wolfe.CommandLine](https://github.com/tom-wolfe/Wolfe.CommandLine/actions/workflows/cicd.yml/badge.svg)](https://github.com/tom-wolfe/Wolfe.CommandLine/actions/workflows/cicd.yml)
+
 # Wolfe.CommandLine
 
 Wolfe.CommandLine is a set of utility extensions for the [System.CommandLine](https://github.com/dotnet/command-line-api) package, including automatic completion registration.
