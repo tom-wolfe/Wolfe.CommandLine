@@ -38,19 +38,52 @@ public sealed class CompletionEnvironment
     /// </summary>
     public bool IsWindows { get; init; }
 
+    /// <summary>
+    /// The <c>XDG_STATE_HOME</c> override, when set.
+    /// </summary>
+    public string? XdgStateHome { get; init; }
+
+    /// <summary>
+    /// The user's login shell (the <c>SHELL</c> environment variable), when known.
+    /// </summary>
+    public string? LoginShell { get; init; }
+
+    /// <summary>
+    /// Whether the process was launched from a PowerShell session.
+    /// </summary>
+    public bool RunningInPowerShell { get; init; }
+
+    /// <summary>
+    /// Whether the process is running on a CI agent.
+    /// </summary>
+    public bool IsContinuousIntegration { get; init; }
+
     internal string ConfigHome => XdgConfigHome is { Length: > 0 } ? XdgConfigHome : Path.Combine(Home, ".config");
 
     internal string DataHome => XdgDataHome is { Length: > 0 } ? XdgDataHome : Path.Combine(Home, ".local", "share");
 
-    /// <summary>The real environment.</summary>
+    internal string StateHome => XdgStateHome is { Length: > 0 } ? XdgStateHome : Path.Combine(Home, ".local", "state");
+
+    /// <summary>
+    /// The real environment.
+    /// </summary>
     public static CompletionEnvironment Detect() => new()
     {
         Home = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
         XdgConfigHome = Environment.GetEnvironmentVariable("XDG_CONFIG_HOME"),
         XdgDataHome = Environment.GetEnvironmentVariable("XDG_DATA_HOME"),
+        XdgStateHome = Environment.GetEnvironmentVariable("XDG_STATE_HOME"),
         ZshFunctionPath = ProbeZshFunctionPath,
         BashCompletionInstalled = ProbeBashCompletion,
         IsWindows = OperatingSystem.IsWindows(),
+        LoginShell = Environment.GetEnvironmentVariable("SHELL"),
+        // pwsh exports PSModulePath; on Windows it is a machine-wide variable, so it only signals pwsh elsewhere.
+        RunningInPowerShell = !OperatingSystem.IsWindows()
+            && Environment.GetEnvironmentVariable("PSModulePath") is { Length: > 0 },
+        // CI covers GitHub Actions, GitLab, CircleCI, Travis; TF_BUILD is Azure DevOps; JENKINS_URL is Jenkins.
+        IsContinuousIntegration = Environment.GetEnvironmentVariable("CI") is { Length: > 0 }
+            || Environment.GetEnvironmentVariable("TF_BUILD") is { Length: > 0 }
+            || Environment.GetEnvironmentVariable("JENKINS_URL") is { Length: > 0 },
     };
 
     private static readonly string[] BashCompletionMarkers =

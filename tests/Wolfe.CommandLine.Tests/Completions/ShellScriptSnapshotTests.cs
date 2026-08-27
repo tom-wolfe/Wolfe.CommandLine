@@ -1,4 +1,3 @@
-using Wolfe.CommandLine.Completions;
 using Wolfe.CommandLine.Completions.Models.Shells;
 
 namespace Wolfe.CommandLine.Tests.Completions;

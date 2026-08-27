@@ -9,7 +9,7 @@ Wolfe.CommandLine is a set of utility extensions for the [System.CommandLine](ht
 Installation is as easy as just adding the package:
 
 ```bash
-dotnet package add Wolfe.CommanLine
+dotnet package add Wolfe.CommandLine
 ```
 
 ## Usage
@@ -46,5 +46,24 @@ Installation will pick a directory that the shell loads completions from automat
 When no such directory is available (always for **pwsh**), it falls back to a managed
 `# >>> my-app completion >>>` block in the shell's startup file. Uninstall sweeps both.
 
-The scripts are thin bridges: on tab they run `my-app [suggest:<cursor>] "<line>"` and feed the
+#### Auto-install
+
+To skip the manual `completion install` step entirely, call the auto-installer once at startup,
+before invoking the parsed command:
+
+```csharp
+var root = new RootCommand()
+    .AddCompletions("my-app");
+await CompletionAutoInstall.Run("my-app", args);
+return await root.Parse(args).InvokeAsync();
+```
+
+The first time the app runs, completion is installed for the user's current shell:
+- silently (with a notice on stderr) when there is a directory the shell loads automatically
+- behind a `[y/N]` prompt when it would have to edit a startup file
+
+It runs at most once per shell, and never throws. It won't prompt unless the terminal is interactive,
+and if the user declines, their answer is recorded under the XDG state home.
+
+The installed scripts are thin bridges: on tab they run `my-app [suggest:<cursor>] "<line>"` and feed the
 candidates back to the shell, so completions always match the installed binary and never go stale.
