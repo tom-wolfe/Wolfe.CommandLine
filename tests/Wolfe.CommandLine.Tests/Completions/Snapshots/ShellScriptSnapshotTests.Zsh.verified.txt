@@ -1,0 +1,9 @@
+﻿# my-app zsh completion.
+# Enable for the current shell:  source <(my-app completion zsh)
+# Install permanently:           my-app completion install zsh
+_my_app_complete()
+{
+    local completions="$("${words[1]}" "[suggest:${CURSOR}]" "${BUFFER}" 2>/dev/null)"
+    _values 'completions' ${(ps:\n:)completions}
+}
+compdef _my_app_complete my-app

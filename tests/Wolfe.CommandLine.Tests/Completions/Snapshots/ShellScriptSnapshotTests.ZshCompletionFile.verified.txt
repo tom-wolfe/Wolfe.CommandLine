@@ -1,0 +1,4 @@
+﻿#compdef my-app
+# my-app zsh completion, autoloaded from fpath.
+local completions="$("${words[1]}" "[suggest:${CURSOR}]" "${BUFFER}" 2>/dev/null)"
+_values 'completions' ${(ps:\n:)completions}

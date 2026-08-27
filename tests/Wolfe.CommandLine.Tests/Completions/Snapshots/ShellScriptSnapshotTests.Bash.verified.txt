@@ -1,0 +1,11 @@
+﻿# my-app bash completion.
+# Enable for the current shell:  source <(my-app completion bash)
+# Install permanently:           my-app completion install bash
+_my_app_complete()
+{
+    local completions
+    completions="$("${COMP_WORDS[0]}" "[suggest:${COMP_POINT}]" "${COMP_LINE}" 2>/dev/null)"
+    COMPREPLY=( $(compgen -W "${completions}" -- "${COMP_WORDS[COMP_CWORD]}") )
+    return 0
+}
+complete -f -F _my_app_complete my-app
