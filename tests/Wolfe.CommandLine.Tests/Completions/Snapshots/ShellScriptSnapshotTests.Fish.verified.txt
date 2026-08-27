@@ -1,0 +1,8 @@
+﻿# my-app fish completion.
+# Enable for the current shell:  my-app completion fish | source
+# Install permanently:           my-app completion install fish
+function __my_app_complete
+    set -l line (commandline -cp)
+    my-app "[suggest:"(string length -- $line)"]" "$line" 2>/dev/null
+end
+complete -c my-app -f -a '(__my_app_complete)'

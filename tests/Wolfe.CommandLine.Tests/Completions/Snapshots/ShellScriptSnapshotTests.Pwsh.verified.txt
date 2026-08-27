@@ -1,0 +1,10 @@
+﻿# my-app PowerShell completion.
+# Enable for the current session:  my-app completion pwsh | Out-String | Invoke-Expression
+# Install permanently:             my-app completion install pwsh
+Register-ArgumentCompleter -Native -CommandName my-app -ScriptBlock {
+    param($wordToComplete, $commandAst, $cursorPosition)
+    $line = $commandAst.ToString()
+    & my-app "[suggest:$cursorPosition]" "$line" 2>$null | ForEach-Object {
+        [System.Management.Automation.CompletionResult]::new($_, $_, 'ParameterValue', $_)
+    }
+}
